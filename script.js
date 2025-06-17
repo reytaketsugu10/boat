@@ -1,5 +1,20 @@
 console.log("script.js 読み込まれました！");
 
+console.log("データ取得中", folderId);
+
+fetch(`https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType='application/pdf'+and+trashed=false&fields=files(id,name,modifiedTime)&key=${apiKey}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log("取得結果:", data);
+
+    if (!data.files || data.files.length === 0) {
+      console.warn(`PDFが見つかりません: ${folderId}`);
+    }
+    
+    // あとはPDF表示処理...
+  })
+
+
 async function fetchPDFFiles(folderId) {
     const query = `'${folderId}' in parents and mimeType='application/pdf' and trashed = false`;
     const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,modifiedTime)&key=${apiKey}`;
