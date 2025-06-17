@@ -1,3 +1,5 @@
+console.log("script.js 読み込まれました！");
+
 async function fetchPDFFiles(folderId) {
     const query = `'${folderId}' in parents and mimeType='application/pdf' and trashed = false`;
     const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,modifiedTime)&key=${apiKey}`;
