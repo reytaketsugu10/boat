@@ -1,6 +1,6 @@
 console.log("upload.js 読み込み完了");
 
-// OAuth認証用スコープ
+// 認証に必要な情報
 const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
 
 let tokenClient;
@@ -8,13 +8,9 @@ let gapiInited = false;
 let gisInited = false;
 let selectedFiles = [];
 
-const fileElem = document.getElementById('fileElem');
 const dropArea = document.getElementById('drop-area');
+const fileElem = document.getElementById('fileElem');
 const uploadBtn = document.getElementById('uploadBtn');
-
-// ファイル選択時
-fileElem.addEventListener('change', handleFileSelect);
-uploadBtn.addEventListener('click', handleUpload);
 
 // ドラッグ＆ドロップ対応
 ['dragenter', 'dragover'].forEach(eventName => {
@@ -23,7 +19,6 @@ uploadBtn.addEventListener('click', handleUpload);
     dropArea.classList.add('highlight');
   }, false);
 });
-
 ['dragleave', 'drop'].forEach(eventName => {
   dropArea.addEventListener(eventName, (e) => {
     e.preventDefault();
@@ -34,26 +29,38 @@ uploadBtn.addEventListener('click', handleUpload);
 dropArea.addEventListener('drop', (e) => {
   e.preventDefault();
   const dt = e.dataTransfer;
-  const files = dt.files;
+  const files = Array.from(dt.files);
 
-  const dataTransfer = new DataTransfer();
-  for (let file of files) {
-    if (file.type === "application/pdf") {
-      dataTransfer.items.add(file);
-    }
+  selectedFiles = files.filter(file => file.type === "application/pdf");
+
+  if (selectedFiles.length === 0) {
+    alert("PDFファイルをドロップしてください");
+    return;
   }
 
-  fileElem.files = dataTransfer.files;
-  handleFileSelect({ target: fileElem });
+  console.log("ドロップされたファイル:", selectedFiles.map(f => f.name));
+  uploadBtn.disabled = false;
 });
 
-// Google API 読み込み後
+// ファイル選択（ボタン経由）
+fileElem.addEventListener('change', (e) => {
+  selectedFiles = Array.from(e.target.files).filter(file => file.type === "application/pdf");
+
+  if (selectedFiles.length === 0) {
+    alert("PDFファイルを選択してください");
+    return;
+  }
+
+  console.log("選択されたファイル:", selectedFiles.map(f => f.name));
+  uploadBtn.disabled = false;
+});
+
+// Google API 初期化
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);
 }
 window.gapiLoaded = gapiLoaded;
 
-// Google Identity 読み込み後
 function gisLoaded() {
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: clientId,
@@ -64,33 +71,25 @@ function gisLoaded() {
 }
 window.gisLoaded = gisLoaded;
 
-// GAPI初期化
 async function initializeGapiClient() {
   await gapi.client.init({
     apiKey: apiKey,
     discoveryDocs: [
+      'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
       'https://sheets.googleapis.com/$discovery/rest?version=v4',
-      'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'
     ],
   });
   gapiInited = true;
   maybeEnableUpload();
 }
 
-// 認証完了後にボタン有効化
 function maybeEnableUpload() {
   if (gapiInited && gisInited) {
     uploadBtn.disabled = false;
   }
 }
 
-// ファイル選択処理
-function handleFileSelect(event) {
-  selectedFiles = Array.from(event.target.files);
-  console.log("選択されたファイル:", selectedFiles.map(f => f.name));
-}
-
-// ファイル名からタイトル（競艇場）を推定
+// ファイル名から地名（フォルダ名）を抽出
 function extractTitleFromFilename(filename) {
   for (const title in folderMap) {
     if (filename.includes(title)) {
@@ -102,7 +101,7 @@ function extractTitleFromFilename(filename) {
 
 // アップロード処理本体
 async function handleUpload() {
-  if (!selectedFiles.length) return alert("ファイルを選択してください");
+  if (!selectedFiles.length) return alert("ファイルを選択またはドロップしてください");
 
   tokenClient.callback = async (resp) => {
     if (resp.error) throw resp;
@@ -110,7 +109,7 @@ async function handleUpload() {
     for (const file of selectedFiles) {
       const title = extractTitleFromFilename(file.name);
       if (!title || !folderMap[title]) {
-        alert(`対応するタイトルが見つかりません: ${file.name}`);
+        alert(`対応する地名が見つかりません: ${file.name}`);
         continue;
       }
 
@@ -124,6 +123,7 @@ async function handleUpload() {
       form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
       form.append('file', file);
 
+      // Google Driveにアップロード
       const uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
         method: 'POST',
         headers: new Headers({ Authorization: `Bearer ${gapi.auth.getToken().access_token}` }),
@@ -133,6 +133,7 @@ async function handleUpload() {
       const uploadedFile = await uploadRes.json();
       const now = new Date().toISOString();
 
+      // Google Sheetsに記録
       await gapi.client.sheets.spreadsheets.values.append({
         spreadsheetId: spreadsheetId,
         range: 'A:D',
@@ -143,16 +144,16 @@ async function handleUpload() {
         }
       });
 
-      alert(`アップロード完了: ${file.name}`);
+      console.log(`アップロード成功: ${file.name}`);
     }
 
+    alert("すべてのファイルをアップロードしました。");
     selectedFiles = [];
+    uploadBtn.disabled = true;
     fileElem.value = '';
   };
 
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
-// グローバルで呼び出せるように登録
-window.gapiLoaded = gapiLoaded;
-window.gisLoaded = gisLoaded;
 
+uploadBtn.addEventListener('click', handleUpload);
