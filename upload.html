@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <!-- Google API & Identity Services -->
+<script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+<head>
+  <meta charset="UTF-8">
+  <title>PDFアップロード</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>PDFアップロード</h1>
+
+  <div id="drop-area">
+    <p>ここにPDFをドロップするか、下から選んでください</p>
+    <input type="file" id="fileElem" accept="application/pdf" multiple />
+    <label class="button" for="fileElem">ファイルを選択</label>
+  </div>
+
+  <button id="uploadBtn" disabled>アップロード開始</button>
+
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="data.js"></script>
+  <script src="upload.js"></script>
+</body>
+</html>

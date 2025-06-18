@@ -1,60 +1,59 @@
 console.log("script.js 読み込まれました！");
 
+async function init() {
+  await gapi.client.init({
+    apiKey: apiKey,
+    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+  });
 
-async function fetchPDFFiles(folderId) {
-    const query = `'${folderId}' in parents and mimeType='application/pdf' and trashed = false`;
-    const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,modifiedTime)&key=${apiKey}`;
-    
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.files;
-  }
-  
-  function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
-  }
-  
-  async function renderAll() {
-    const container = document.getElementById('pdf-container');
-    const now = Date.now();
-    const twentyHours = 20 * 60 * 60 * 1000;
-  
-    for (const [title, folderId] of Object.entries(folderMap)) {
-      const files = await fetchPDFFiles(folderId);
-      console.log(`[${title}] 取得ファイル数:`, files.length); // ← ここ！
-  
-      const validFiles = files.filter(file => {
-        const uploaded = new Date(file.modifiedTime).getTime();
-        return now - uploaded < twentyHours;
-      });
-  
-      console.log(`[${title}] 表示対象ファイル数:`, validFiles.length); // ← ここ！
-  
-      if (validFiles.length > 0) {
-        const block = document.createElement('div');
-        block.className = 'block';
-  
-        const heading = document.createElement('h2');
-        heading.textContent = title;
-        block.appendChild(heading);
-  
-        const list = document.createElement('ul');
-        validFiles.forEach(file => {
-          const li = document.createElement('li');
-          const link = document.createElement('a');
-          link.href = `https://drive.google.com/uc?id=${file.id}&export=download`;
-          link.target = '_blank';
-          link.textContent = `${file.name}（${formatDate(file.modifiedTime)}）`;
-          li.appendChild(link);
-          list.appendChild(li);
-        });
-  
-        block.appendChild(list);
-        container.appendChild(block);
-      }
+  const res = await gapi.client.sheets.spreadsheets.values.get({
+    spreadsheetId: spreadsheetId,
+    range: 'A:D',
+  });
+
+  const rows = res.result.values;
+  if (!rows || rows.length < 2) return;
+
+  const now = Date.now();
+  const cutoff = 20 * 60 * 60 * 1000;
+  const container = document.getElementById('pdf-container');
+  const grouped = {};
+
+  rows.slice(1).forEach(([title, filename, fileId, uploadedAt]) => {
+    const uploadedTime = new Date(uploadedAt).getTime();
+    if (now - uploadedTime < cutoff) {
+      if (!grouped[title]) grouped[title] = [];
+      grouped[title].push({ filename, fileId, uploadedAt });
     }
+  });
+
+  for (const title in grouped) {
+    const block = document.createElement('div');
+    block.className = 'block';
+
+    const heading = document.createElement('h2');
+    heading.textContent = title;
+    block.appendChild(heading);
+
+    const list = document.createElement('ul');
+    grouped[title].forEach(file => {
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = `https://drive.google.com/uc?id=${file.fileId}&export=download`;
+      link.target = '_blank';
+      link.textContent = `${file.filename}（${formatDate(file.uploadedAt)}）`;
+      li.appendChild(link);
+      list.appendChild(li);
+    });
+
+    block.appendChild(list);
+    container.appendChild(block);
   }
-  
-  renderAll();
-  
+}
+
+function formatDate(str) {
+  const d = new Date(str);
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+}
+
+gapi.load('client', init);
