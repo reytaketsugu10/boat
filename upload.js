@@ -152,3 +152,7 @@ async function handleUpload() {
 
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
+// グローバルで呼び出せるように登録
+window.gapiLoaded = gapiLoaded;
+window.gisLoaded = gisLoaded;
+
