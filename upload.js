@@ -1,3 +1,7 @@
+window.gapiLoaded = gapiLoaded;
+window.gisLoaded = gisLoaded;
+
+
 console.log("upload.js 読み込み完了");
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
