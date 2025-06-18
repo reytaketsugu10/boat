@@ -20,8 +20,13 @@ const folderMap = {
     '唐津': '1eSRLM_VTZedpklrqC2JzzTNbX3dqSGx_',
     '大村': '1hHscT2LuKtbJSFDJPiIlBUekyb2nTwLW',
     '桐生': '1LDDMfDiFHgLm2B-a3zms8sTJQX4nJSam',
-    '鳴門': '1ZPTdQj4pKqzIHrSTpwm0TGZXKwMETZk_'
+    '鳴門': '1ZPTdQj4pKqzIHrSTpwm0TGZXKwMETZk_',
+    '徳山': '1mM5o_0dRCHjh8bv9EWaUGokxj3LPnEiT',
+    '福岡': '1AIyRotBHul5HIhKRIL26uxSWs863C_Rh'
   };
   
   const apiKey = 'AIzaSyAldrBuzCVGA_GISZlryWNPU2bq2Ed8VKc';
-  
+const clientId = '123628278468-lemsangms56pbcriuqnkhii075dfi7eg.apps.googleusercontent.com';
+const spreadsheetId = '1uOSiMa8OrrsvhUiUrpNbsMoyp9oNZrj43oSD90qssNQ';
+
+
