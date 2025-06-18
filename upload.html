@@ -32,12 +32,13 @@
 
   <button id="uploadBtn" disabled>アップロード開始</button>
 
-  <!-- 先に設定ファイルと upload.js を読み込む -->
-  <script src="data.js"></script>
-  <script src="upload.js"></script>
 
-  <!-- 最後に Google API を読み込む（upload.jsで関数定義済みなのでOK） -->
+  <!-- 最後に Google API を読み込む -->
   <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
   <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+    <!-- 先に設定ファイルと upload.js を読み込む -->
+    <script src="data.js"></script>
+    <script src="upload.js"></script>  
 </body>
 </html>
