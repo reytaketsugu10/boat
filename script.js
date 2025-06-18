@@ -22,10 +22,14 @@ async function fetchPDFFiles(folderId) {
   
     for (const [title, folderId] of Object.entries(folderMap)) {
       const files = await fetchPDFFiles(folderId);
+      console.log(`[${title}] 取得ファイル数:`, files.length); // ← ここ！
+  
       const validFiles = files.filter(file => {
         const uploaded = new Date(file.modifiedTime).getTime();
         return now - uploaded < twentyHours;
       });
+  
+      console.log(`[${title}] 表示対象ファイル数:`, validFiles.length); // ← ここ！
   
       if (validFiles.length > 0) {
         const block = document.createElement('div');
