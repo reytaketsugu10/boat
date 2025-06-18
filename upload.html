@@ -1,3 +1,4 @@
+<!-- スタイル・構造などはそのままでOK -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -31,12 +32,12 @@
 
   <button id="uploadBtn" disabled>アップロード開始</button>
 
-  <!-- Google APIスクリプト -->
-  <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-  <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-
-  <!-- 設定とアップロードスクリプト -->
+  <!-- 先に設定ファイルと upload.js を読み込む -->
   <script src="data.js"></script>
   <script src="upload.js"></script>
+
+  <!-- 最後に Google API を読み込む（upload.jsで関数定義済みなのでOK） -->
+  <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+  <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
