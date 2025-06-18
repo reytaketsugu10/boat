@@ -1,8 +1,7 @@
 window.gapiLoaded = gapiLoaded;
 window.gisLoaded = gisLoaded;
 
-
-console.log("upload.js 読み込み完了");
+console.log("✅ upload.js 読み込み完了");
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
 
@@ -28,12 +27,9 @@ const uploadBtn = document.getElementById('uploadBtn');
     dropArea.classList.remove('highlight');
   }, false);
 });
-
 dropArea.addEventListener('drop', (e) => {
   e.preventDefault();
-  const dt = e.dataTransfer;
-  const files = Array.from(dt.files);
-
+  const files = Array.from(e.dataTransfer.files);
   selectedFiles = files.filter(file => file.type === "application/pdf");
 
   if (selectedFiles.length === 0) {
@@ -44,7 +40,6 @@ dropArea.addEventListener('drop', (e) => {
   console.log("ドロップされたファイル:", selectedFiles.map(f => f.name));
   uploadBtn.disabled = false;
 });
-
 fileElem.addEventListener('change', (e) => {
   selectedFiles = Array.from(e.target.files).filter(file => file.type === "application/pdf");
 
@@ -61,37 +56,44 @@ fileElem.addEventListener('change', (e) => {
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);
 }
-window.gapiLoaded = gapiLoaded;
-
 function gisLoaded() {
   console.log("✅ gisLoaded が呼び出されました");
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: clientId,
-    scope: SCOPES,
-    callback: () => {} // 仮のcallback（後で設定）
-  });
-  gisInited = true;
+  try {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: SCOPES,
+      callback: () => {}
+    });
+    gisInited = true;
+    maybeEnableUpload();
+  } catch (e) {
+    console.error("❌ tokenClient の初期化に失敗", e);
+  }
 }
-window.gisLoaded = gisLoaded;
-
 async function initializeGapiClient() {
-  await gapi.client.init({
-    apiKey: apiKey,
-    discoveryDocs: [
-      'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
-      'https://sheets.googleapis.com/$discovery/rest?version=v4',
-    ],
-  });
-  gapiInited = true;
-  maybeEnableUpload();
+  try {
+    await gapi.client.init({
+      apiKey: apiKey,
+      discoveryDocs: [
+        'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+        'https://sheets.googleapis.com/$discovery/rest?version=v4',
+      ],
+    });
+    gapiInited = true;
+    maybeEnableUpload();
+  } catch (e) {
+    console.error("❌ GAPI 初期化失敗", e);
+  }
 }
 
 function maybeEnableUpload() {
   if (gapiInited && gisInited) {
     uploadBtn.disabled = false;
+    console.log("✅ Google API準備完了。アップロード可能");
   }
 }
 
+// ファイル名からタイトル抽出
 function extractTitleFromFilename(filename) {
   for (const title in folderMap) {
     if (filename.includes(title)) {
@@ -101,7 +103,7 @@ function extractTitleFromFilename(filename) {
   return null;
 }
 
-// アップロードボタンの処理
+// アップロード処理
 uploadBtn.addEventListener('click', async () => {
   console.log("✅ アップロードボタンがクリックされました");
 
@@ -111,12 +113,19 @@ uploadBtn.addEventListener('click', async () => {
   }
 
   if (!tokenClient) {
-    console.warn("tokenClient が未定義のため初期化します");
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: clientId,
-      scope: SCOPES,
-      callback: () => {} // 仮置き
-    });
+    console.warn("⚠️ tokenClient が未定義。再初期化を試みます");
+    try {
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: SCOPES,
+        callback: () => {}
+      });
+      gisInited = true;
+      maybeEnableUpload();
+    } catch (e) {
+      alert("認証クライアントの初期化に失敗しました。APIキーやクライアントIDを確認してください。");
+      return;
+    }
   }
 
   if (!selectedFiles.length) {
@@ -126,7 +135,7 @@ uploadBtn.addEventListener('click', async () => {
 
   tokenClient.callback = async (resp) => {
     if (resp.error) {
-      console.error("認証エラー:", resp);
+      console.error("❌ 認証エラー:", resp);
       alert("認証に失敗しました。再度お試しください。");
       return;
     }
@@ -167,7 +176,7 @@ uploadBtn.addEventListener('click', async () => {
         }
       });
 
-      console.log(`アップロード成功: ${file.name}`);
+      console.log(`✅ アップロード成功: ${file.name}`);
     }
 
     alert("すべてのファイルをアップロードしました。");

@@ -1,3 +1,8 @@
+const apiKey = 'AIzaSyAldrBuzCVGA_GISZlryWNPU2bq2Ed8VKc';
+const clientId = '123628278468-lemsangms56pbcriuqnkhii075dfi7eg.apps.googleusercontent.com';
+const spreadsheetId = '1uOSiMa8OrrsvhUiUrpNbsMoyp9oNZrj43oSD90qssNQ';
+
+
 const folderMap = {
     '住之江': '1_1xNl3VSo5utp7jSsJBMZagrJf0DbxQH',
     '平和島': '1X3ldNwNse1Te_x5hxYtrxgZ9HTN0f6hH',
@@ -24,9 +29,5 @@ const folderMap = {
     '徳山': '1mM5o_0dRCHjh8bv9EWaUGokxj3LPnEiT',
     '福岡': '1AIyRotBHul5HIhKRIL26uxSWs863C_Rh'
   };
-  
-  const apiKey = 'AIzaSyAldrBuzCVGA_GISZlryWNPU2bq2Ed8VKc';
-const clientId = '123628278468-lemsangms56pbcriuqnkhii075dfi7eg.apps.googleusercontent.com';
-const spreadsheetId = '1uOSiMa8OrrsvhUiUrpNbsMoyp9oNZrj43oSD90qssNQ';
 
 
