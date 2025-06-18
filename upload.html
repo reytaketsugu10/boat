@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>PDFアップロード（Google Drive & Sheets連携）</title>
+  <title>PDFアップロード</title>
   <link rel="stylesheet" href="style.css">
   <style>
     #drop-area {
@@ -31,14 +31,12 @@
 
   <button id="uploadBtn" disabled>アップロード開始</button>
 
-  <!-- Google API関連のスクリプト読み込み -->
+  <!-- Google APIスクリプト -->
   <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
   <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 
-  <!-- 設定情報（APIキー、クライアントID、シートID、DriveフォルダIDなど） -->
+  <!-- 設定とアップロードスクリプト -->
   <script src="data.js"></script>
-
-  <!-- アップロード処理本体 -->
   <script src="upload.js"></script>
 </body>
 </html>
