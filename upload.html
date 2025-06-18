@@ -2,28 +2,22 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>PDFアップロード</title>
+  <title>PDFアップロード（Google Drive & Sheets連携）</title>
   <link rel="stylesheet" href="style.css">
   <style>
     #drop-area {
-      border: 2px dashed #aaa;
-      padding: 40px;
+      border: 2px dashed #ccc;
+      padding: 30px;
       text-align: center;
-      margin: 20px;
-      background-color: #f9f9f9;
+      margin-bottom: 20px;
     }
     #drop-area.highlight {
+      background-color: #eef;
       border-color: #00f;
-      background-color: #e0f0ff;
     }
-    .button {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 16px;
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
+    #uploadBtn {
+      padding: 10px 20px;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -31,17 +25,20 @@
   <h1>PDFアップロード</h1>
 
   <div id="drop-area">
-    <p>ここにPDFファイルをドロップするか、ボタンで選択してください</p>
-    <input type="file" id="fileElem" accept="application/pdf" multiple hidden>
-    <label class="button" for="fileElem">ファイルを選択</label>
+    <p>ここにPDFをドラッグ＆ドロップするか、ファイルを選択してください</p>
+    <input type="file" id="fileElem" accept="application/pdf" multiple>
   </div>
 
   <button id="uploadBtn" disabled>アップロード開始</button>
 
-  <!-- Google API -->
+  <!-- Google API関連のスクリプト読み込み -->
   <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
   <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+  <!-- 設定情報（APIキー、クライアントID、シートID、DriveフォルダIDなど） -->
   <script src="data.js"></script>
+
+  <!-- アップロード処理本体 -->
   <script src="upload.js"></script>
 </body>
 </html>
