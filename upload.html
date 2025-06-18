@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <!-- Google API & Identity Services -->
-<script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-<script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-
 <head>
   <meta charset="UTF-8">
   <title>PDFアップロード</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    #drop-area {
+      border: 2px dashed #aaa;
+      padding: 40px;
+      text-align: center;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    #drop-area.highlight {
+      border-color: #00f;
+      background-color: #e0f0ff;
+    }
+    .button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>PDFアップロード</h1>
 
   <div id="drop-area">
-    <p>ここにPDFをドロップするか、下から選んでください</p>
-    <input type="file" id="fileElem" accept="application/pdf" multiple />
+    <p>ここにPDFファイルをドロップするか、ボタンで選択してください</p>
+    <input type="file" id="fileElem" accept="application/pdf" multiple hidden>
     <label class="button" for="fileElem">ファイルを選択</label>
   </div>
 
   <button id="uploadBtn" disabled>アップロード開始</button>
 
-  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- Google API -->
+  <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+  <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
   <script src="data.js"></script>
   <script src="upload.js"></script>
 </body>
