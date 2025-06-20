@@ -1,7 +1,6 @@
-
 console.log("script.js 読み込まれました！");
 
-const apiKey = 'YOUR_API_KEY_HERE'; // 実際のAPIキーに置き換えてください
+const apiKey = 'AIzaSyAldrBuzCVGA_GISZlryWNPU2bq2Ed8VKc'; // 実際のAPIキーに置き換えてください
 
 async function fetchPDFFiles(folderId) {
   const query = `'${folderId}' in parents and mimeType='application/pdf' and trashed = false`;
@@ -14,22 +13,16 @@ async function fetchPDFFiles(folderId) {
 
 function formatDate(dateStr) {
   const date = new Date(dateStr);
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 }
 
 async function renderAll() {
   const container = document.getElementById('pdf-container');
-  const now = Date.now();
-  const twentyHours = 20 * 60 * 60 * 1000;
 
   for (const [title, folderId] of Object.entries(folderMap)) {
     const files = await fetchPDFFiles(folderId);
-    const validFiles = files.filter(file => {
-      const uploaded = new Date(file.modifiedTime).getTime();
-      return now - uploaded < twentyHours;
-    });
 
-    if (validFiles.length > 0) {
+    if (files.length > 0) {
       const block = document.createElement('div');
       block.className = 'block';
 
@@ -38,7 +31,7 @@ async function renderAll() {
       block.appendChild(heading);
 
       const list = document.createElement('ul');
-      validFiles.forEach(file => {
+      files.forEach(file => {
         const li = document.createElement('li');
         const link = document.createElement('a');
         link.href = `https://drive.google.com/uc?id=${file.id}&export=download`;
