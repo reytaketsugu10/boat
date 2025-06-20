@@ -1,18 +1,51 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>PDF一覧（ボートレース場別）</title>
+  <title>PDF一覧</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: sans-serif; text-align: center; margin: 50px; }
+    #pdf-container { display: none; }
+    #login-form { margin-top: 100px; }
+    .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .block { border: 1px solid #ccc; padding: 10px; background: #f9f9f9; }
+  </style>
 </head>
 <body>
-  <h1>PDF一覧</h1>
-  <div id="pdf-container" class="grid-container">
-    <!-- JavaScriptでここにPDF情報が挿入されます -->
+
+  <div id="login-form">
+    <h2>パスワードを入力してください</h2>
+    <input type="password" id="passwordInput" placeholder="パスワード">
+    <button onclick="checkPassword()">送信</button>
+    <p id="error" style="color:red;"></p>
   </div>
 
-  <script src="data.js"></script> <!-- フォルダ名とDrive IDのマップ -->
-  <script src="script.js"></script> <!-- データ取得ロジック -->
+  <div id="pdf-container" class="grid-container"></div>
+
+  <script>
+    const correctPassword = "your_password_here"; // ← ここにパスワードを設定
+
+    function checkPassword() {
+      const input = document.getElementById('passwordInput').value;
+      const error = document.getElementById('error');
+
+      if (input === correctPassword) {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('pdf-container').style.display = 'grid';
+        loadScript('data.js', () => loadScript('script.js'));
+      } else {
+        error.textContent = "パスワードが違います。";
+      }
+    }
+
+    function loadScript(src, callback) {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = callback;
+      document.body.appendChild(script);
+    }
+  </script>
+
 </body>
 </html>
