@@ -13,39 +13,42 @@
   </style>
 </head>
 <body>
-
-  <div id="login-form">
-    <h2>パスワードを入力してください</h2>
-    <input type="password" id="passwordInput" placeholder="パスワード">
-    <button onclick="checkPassword()">送信</button>
-    <p id="error" style="color:red;"></p>
-  </div>
-
-  <div id="pdf-container" class="grid-container"></div>
-
-  <script>
-    const correctPassword = "password"; // ← ここにパスワードを設定
-
-    function checkPassword() {
-      const input = document.getElementById('passwordInput').value;
-      const error = document.getElementById('error');
-
-      if (input === correctPassword) {
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('pdf-container').style.display = 'grid';
-        loadScript('data.js', () => loadScript('script.js'));
-      } else {
-        error.textContent = "パスワードが違います。";
+    <div id="password-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;">
+      <p>パスワードを入力してください</p>
+      <input type="password" id="password-input" placeholder="パスワード" style="padding: 10px; font-size: 16px;">
+      <button id="password-submit" style="margin-top: 10px;">送信</button>
+      <p id="error-message" style="color: red; display: none; margin-top: 10px;">パスワードが違います</p>
+    </div>
+  
+    <div id="pdf-container" class="grid-container" style="display: none;">
+      <!-- PDF情報がここに表示されます -->
+    </div>
+  
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+  
+    <script>
+      const correctPassword = "yourpassword"; // ← ここを任意のパスワードに置き換えてください
+  
+      document.getElementById("password-submit").addEventListener("click", checkPassword);
+      document.getElementById("password-input").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          checkPassword();
+        }
+      });
+  
+      function checkPassword() {
+        const input = document.getElementById("password-input").value;
+        if (input === correctPassword) {
+          document.getElementById("password-screen").style.display = "none";
+          document.getElementById("pdf-container").style.display = "block";
+          if (typeof renderAll === "function") renderAll(); // script.js の読み込みが完了していれば実行
+        } else {
+          document.getElementById("error-message").style.display = "block";
+        }
       }
-    }
-
-    function loadScript(src, callback) {
-      const script = document.createElement('script');
-      script.src = src;
-      script.onload = callback;
-      document.body.appendChild(script);
-    }
-  </script>
-
-</body>
+    </script>
+  </body>
+  
 </html>
