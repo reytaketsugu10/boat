@@ -15,7 +15,7 @@ async function init() {
   if (!rows || rows.length < 2) return;
 
   const now = Date.now();
-  const cutoff = 20 * 60 * 60 * 1000;
+ // const cutoff = 20 * 60 * 60 * 1000; (20時間で消すためのコード)
   const container = document.getElementById('pdf-container');
   const grouped = {};
 
