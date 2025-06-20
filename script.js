@@ -10,26 +10,23 @@ console.log("✅ script.js 読み込み完了");
 async function fetchPDFFiles(folderId) {
     const query = `'${folderId}' in parents and mimeType='application/pdf' and trashed = false`;
     const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,modifiedTime)&key=${apiKey}`;
-  
     const res = await fetch(url);
     const data = await res.json();
     return data.files || [];
   }
   
-  // 日付整形
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   }
   
-  // メイン描画処理
   async function renderAll() {
     const container = document.getElementById('pdf-container');
   
-    // 読み込み中メッセージを表示
+    // 「データ参照中」の表示
     const loadingMsg = document.createElement('p');
     loadingMsg.textContent = "データを参照中...";
-    loadingMsg.id = "loading-msg";
+    loadingMsg.classList.add("center-message");
     container.appendChild(loadingMsg);
   
     let hasData = false;
@@ -63,12 +60,13 @@ async function fetchPDFFiles(folderId) {
       }
     }
   
-    // 読み込みメッセージ削除
+    // 読み込み中のテキストを削除
     loadingMsg.remove();
   
     if (!hasData) {
       const msg = document.createElement('p');
       msg.textContent = "データがありません。";
+      msg.classList.add("center-message");
       container.appendChild(msg);
     }
   }
