@@ -1,33 +1,34 @@
-const apiKey = 'AIzaSyAldrBuzCVGA_GISZlryWNPU2bq2Ed8VKc';
-const clientId = '123628278468-lemsangms56pbcriuqnkhii075dfi7eg.apps.googleusercontent.com';
-const spreadsheetId = '1uOSiMa8OrrsvhUiUrpNbsMoyp9oNZrj43oSD90qssNQ';
+const apiKey = 'AIzaSyBe-6zBFKNKPpG7O3QxrPAJaKBFMbEqkDM';
 
 
 const folderMap = {
-    '住之江': '1_1xNl3VSo5utp7jSsJBMZagrJf0DbxQH',
-    '平和島': '1X3ldNwNse1Te_x5hxYtrxgZ9HTN0f6hH',
-    '多摩川': '128aQMISNe_zXi5-k2VaN2lY_5b9mGkWF',
-    '芦屋': '1EKu-Y6T3LZteZnxorDUjBcpXmODS9NYH',
-    'びわこ': '1mjYY4M7ns4lrgj1k0DxoWWzqgKeQrUgF',
-    '戸田': '1clVECByezAiaqwZCufjxH6FLzkpuy-u-',
-    '蒲郡': '1YZiDBpCWsMucSKfi09Wkk8PgEG58q21Z',
-    '丸亀': '1p_2FNF5C22XzsqKYP8P3u8Hbd1hfBBpP',
-    '若松': '1i1ZBYKakUNnWB8NqaNimld2jaJdr3ESa',
-    '下関': '1eW_YBZzn5tx49ATXp8QmLFotefMr0ECW',
-    '常滑': '12qWxIL9gCGR6Rsp15QcXw-mYifSqD-bt',
-    '三国': '1OpM6bsF4-qMKS8W5ixAeegmO2yeRkRS9',
-    '江戸川': '1FggyNVjhX9y_sBS8RYhGJx0WvO4alviz',
-    '浜名湖': '1zlceBJ6jP4vgfRrhp4KouQxOZYsZOLiQ',
-    '宮島': '1S2e6m8D8aOTTz0bZUrFxcyQOJXMLxswF',
-    '児島': '1LQw11lQ9eWTMkG5zyEatrdjI_0D301-a',
-    '尼崎': '1BNEvCxMZTcPGM-yH0qmGv0D2p5nnvKcL',
-    '津': '1OoOHfikEJBS3XxdkgXz_-7fa8ZX64OhH',
-    '唐津': '1eSRLM_VTZedpklrqC2JzzTNbX3dqSGx_',
-    '大村': '1hHscT2LuKtbJSFDJPiIlBUekyb2nTwLW',
-    '桐生': '1LDDMfDiFHgLm2B-a3zms8sTJQX4nJSam',
-    '鳴門': '1ZPTdQj4pKqzIHrSTpwm0TGZXKwMETZk_',
-    '徳山': '1mM5o_0dRCHjh8bv9EWaUGokxj3LPnEiT',
-    '福岡': '1AIyRotBHul5HIhKRIL26uxSWs863C_Rh'
+    '住之江': '1y8mt7uBFsR7F_jLRjXTdxGuvBi5t3X0X',
+    '平和島': '1uDTxGMrYoUEA0dW_o2hauNOuoehlx_Sk',
+    '多摩川': '1MdZ_SqwQg-9pCXE78TLWB5_TzM9EZRGN',
+    '芦屋': '11GQb5wSHkN7YKNc7Qa6CAuABC7D5vK6W',
+    'びわこ': '1voietL1Ebr7z3SM2JPWcB-qaiXUTk19U',
+    '戸田': '1r_f6U9AyVNQSxstzwdCe7G1XQNVQbKdw',
+    '蒲郡': '1mknwSPclNhid6KW76yKvd0rbn_zENzwr',
+    '丸亀': '1sPblRcxM8Nt6dodek_fcvwk3QURxg-Zm',
+    '若松': 'lwxntzGH6d_H7VhqY4tPGZmiEjqS02T1',
+    '下関': '10Ae7HD5fEJHnbC0XUYEt5v72ppm93lwo',
+    '常滑': '1dix_D-ea8fwddDL3VbnorpAap7FbR-kV',
+    '三国': '1B488VH-zZiBCE4FMqi-H5SYgNZuI0Hg1',
+    '江戸川': '1EGp9Yi6qolKgxKq9hQmS1EphSbprl25C',
+    '浜名湖': '1YDF4gavagaahaKtpBKZRUgP1zvpspEee',
+    '宮島': '1r4w6cWdtNXQQHlqlBV34DKHZa6-lrT6E',
+    '児島': '108QlTbopEywtGz_YLawZ2z-bjrX-tOuC',
+    '尼崎': '198xmq3i_Y7aYDClut_eER42ZYvjKiqan',
+    '津': '1nmZZS0XniDb-3mz22GKXu17EPWm8B6FP',
+    '唐津': '1hjP1COcezjxbXDaOsKEhOQC-8MbhyNz0',
+    '大村': '1QgOCJpSWvABYlz83JvQnpNBgvQTEiVOn',
+    '桐生': '1vlNFdPu0pREuUWEOGbmNCgRM72w7ee6g',
+    '鳴門': '1_DfC2wtdHu8yuhEmZPe5SfDlgsWPJbzi',
+    '徳山': '1bDvxfL7KRsbdH8RTpnfvjQqIwlvGCPWE',
+    '福岡': '1DD12QrNDNS8zPRfMTXRAyZ7TTal_2d2r'
   };
+
+
+
 
 
