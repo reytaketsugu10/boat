@@ -1,59 +1,57 @@
+
 console.log("script.js 読み込まれました！");
 
-async function init() {
-  await gapi.client.init({
-    apiKey: apiKey,
-    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-  });
+const apiKey = 'YOUR_API_KEY_HERE'; // 実際のAPIキーに置き換えてください
 
-  const res = await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: spreadsheetId,
-    range: 'A:D',
-  });
+async function fetchPDFFiles(folderId) {
+  const query = `'${folderId}' in parents and mimeType='application/pdf' and trashed = false`;
+  const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,modifiedTime)&key=${apiKey}`;
 
-  const rows = res.result.values;
-  if (!rows || rows.length < 2) return;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.files;
+}
 
-  const now = Date.now();
- // const cutoff = 20 * 60 * 60 * 1000; (20時間で消すためのコード)
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+}
+
+async function renderAll() {
   const container = document.getElementById('pdf-container');
-  const grouped = {};
+  const now = Date.now();
+  const twentyHours = 20 * 60 * 60 * 1000;
 
-  rows.slice(1).forEach(([title, filename, fileId, uploadedAt]) => {
-    const uploadedTime = new Date(uploadedAt).getTime();
-    if (now - uploadedTime < cutoff) {
-      if (!grouped[title]) grouped[title] = [];
-      grouped[title].push({ filename, fileId, uploadedAt });
-    }
-  });
-
-  for (const title in grouped) {
-    const block = document.createElement('div');
-    block.className = 'block';
-
-    const heading = document.createElement('h2');
-    heading.textContent = title;
-    block.appendChild(heading);
-
-    const list = document.createElement('ul');
-    grouped[title].forEach(file => {
-      const li = document.createElement('li');
-      const link = document.createElement('a');
-      link.href = `https://drive.google.com/uc?id=${file.fileId}&export=download`;
-      link.target = '_blank';
-      link.textContent = `${file.filename}（${formatDate(file.uploadedAt)}）`;
-      li.appendChild(link);
-      list.appendChild(li);
+  for (const [title, folderId] of Object.entries(folderMap)) {
+    const files = await fetchPDFFiles(folderId);
+    const validFiles = files.filter(file => {
+      const uploaded = new Date(file.modifiedTime).getTime();
+      return now - uploaded < twentyHours;
     });
 
-    block.appendChild(list);
-    container.appendChild(block);
+    if (validFiles.length > 0) {
+      const block = document.createElement('div');
+      block.className = 'block';
+
+      const heading = document.createElement('h2');
+      heading.textContent = title;
+      block.appendChild(heading);
+
+      const list = document.createElement('ul');
+      validFiles.forEach(file => {
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `https://drive.google.com/uc?id=${file.id}&export=download`;
+        link.target = '_blank';
+        link.textContent = `${file.name}（${formatDate(file.modifiedTime)}）`;
+        li.appendChild(link);
+        list.appendChild(li);
+      });
+
+      block.appendChild(list);
+      container.appendChild(block);
+    }
   }
 }
 
-function formatDate(str) {
-  const d = new Date(str);
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-}
-
-gapi.load('client', init);
+renderAll();
