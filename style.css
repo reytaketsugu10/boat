@@ -32,4 +32,11 @@ body {
     list-style: none;
     padding: 0;
   }
+
+  #loading-msg {
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+  }
+  
   
