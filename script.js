@@ -1,6 +1,6 @@
 console.log("script.js 読み込まれました！");
 
-const apiKey = 'AIzaSyAldrBuzCVGA_GISZlryWNPU2bq2Ed8VKc'; // 実際のAPIキーに置き換えてください
+//const apiKey = 'AIzaSyAldrBuzCVGA_GISZlryWNPU2bq2Ed8VKc'; // 実際のAPIキーに置き換えてください
 
 async function fetchPDFFiles(folderId) {
   const query = `'${folderId}' in parents and mimeType='application/pdf' and trashed = false`;
