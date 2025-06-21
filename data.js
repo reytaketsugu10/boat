@@ -2,7 +2,7 @@ const apiKey = 'AIzaSyBe-6zBFKNKPpG7O3QxrPAJaKBFMbEqkDM';
 const spreadsheetId = '11k-4EcAdozis4ksLlC-iOU2Z1aZeriEkGKvF0_FJSqQ'; 
 const uploadSheetId = '1-vk5fLkgsTDZ87m303GLTCDslK2SduUuKxD0KxfcwD0';
 const clientId = '595784083753-a4nh0rmckfovp3l386qud1ifprgpm8hu.apps.googleusercontent.com';
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbz-VeaTiFeY044gFb0hpnUGetLeMXQucbJc5Qr3Ee9KyARMe0SXkU036D5_2M_DDUCB/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxTaYeL9q6RYoTdDp4cD1FY19xbpu6o82FbVX7Q2B1PYAaLGjMzSdb82IsgDZKlKf7d/exec';
 
 const folderMap = {
     '住之江': '1y8mt7uBFsR7F_jLRjXTdxGuvBi5t3X0X',
