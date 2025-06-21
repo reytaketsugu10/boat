@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>クライアントページ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 2em;
+    }
+    .hidden {
+      display: none;
+    }
+    .folder {
+      margin-top: 2em;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .folder h3 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.2em;
+    }
+    a {
+      display: block;
+      margin: 0.3em 0;
+    }
+  </style>
+</head>
+<body>
+  <h2>ファイル閲覧ページ</h2>
+
+  <div id="loginSection">
+    <p>パスワードを入力してください：</p>
+    <input type="password" id="passwordInput" />
+    <button onclick="checkPassword()">ログイン</button>
+    <p id="loginError" style="color: red;"></p>
+  </div>
+
+  <div id="fileList" class="hidden">
+    <h3>公開中のファイル</h3>
+    <div id="foldersContainer"></div>
+  </div>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxb-tXNj8Uv3fLNEFFcJNZkwSvDIyg7egEslaulatC2qpJVkOtv4rDJ3q1M_HLPm2M0/exec'; // ← あとで置き換えてください
+
+    async function checkPassword() {
+      const password = document.getElementById('passwordInput').value;
+      const res = await fetch(`${scriptURL}?action=checkPassword&password=${encodeURIComponent(password)}`);
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('fileList').classList.remove('hidden');
+        loadFiles();
+      } else {
+        document.getElementById('loginError').textContent = 'パスワードが間違っています';
+      }
+    }
+
+    async function loadFiles() {
+      const res = await fetch(`${scriptURL}?action=getFolderFiles`);
+      const data = await res.json();
+      const container = document.getElementById('foldersContainer');
+      container.innerHTML = '';
+
+      if (!data.folders || Object.keys(data.folders).length === 0) {
+        container.textContent = '現在、表示可能なファイルはありません。';
+        return;
+      }
+
+      for (const folderName in data.folders) {
+        const folderDiv = document.createElement('div');
+        folderDiv.className = 'folder';
+
+        const title = document.createElement('h3');
+        title.textContent = `【${folderName}】`;
+        folderDiv.appendChild(title);
+
+        const files = data.folders[folderName];
+        if (files.length === 0) {
+          const empty = document.createElement('p');
+          empty.textContent = 'ファイルはありません。';
+          folderDiv.appendChild(empty);
+        } else {
+          files.forEach(file => {
+            const a = document.createElement('a');
+            a.href = file.url;
+            a.textContent = file.name;
+            a.target = '_blank';
+            folderDiv.appendChild(a);
+          });
+        }
+
+        container.appendChild(folderDiv);
+      }
+    }
+  </script>
+</body>
+</html>
