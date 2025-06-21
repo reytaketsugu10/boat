@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>管理者ページ</title>
+  <script src="data.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2em;
+    }
+    section {
+      margin-bottom: 3em;
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+    }
+    input, select {
+      padding: 0.5em;
+      width: 100%;
+      max-width: 400px;
+    }
+    button {
+      margin-top: 1em;
+      padding: 0.5em 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>管理者ページ</h1>
+
+  <section>
+    <h2>📤 ファイルアップロード</h2>
+    <label>アップロード先フォルダ（地名）:</label>
+    <select id="locationSelect">
+      <option value="平和島">平和島</option>
+      <option value="芦屋">芦屋</option>
+      <option value="多摩川">多摩川</option>
+      <!-- 必要に応じて追加 -->
+    </select>
+
+    <label>ファイル選択（PDF）:</label>
+    <input type="file" id="uploadFile" accept="application/pdf" />
+
+    <button onclick="uploadFile()">アップロード</button>
+    <p id="uploadResult"></p>
+  </section>
+
+  <section>
+    <h2>🔐 パスワード変更</h2>
+    <label>新しいパスワード:</label>
+    <input type="text" id="newPassword" />
+
+    <button onclick="changePassword()">パスワードを変更</button>
+    <p id="passwordResult"></p>
+  </section>
+
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById('uploadFile');
+      const location = document.getElementById('locationSelect').value;
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('ファイルを選択してください');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('location', location);
+
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      document.getElementById('uploadResult').textContent = data.message || 'アップロード完了';
+    }
+
+    async function changePassword() {
+      const newPw = document.getElementById('newPassword').value;
+      if (!newPw) {
+        alert('新しいパスワードを入力してください');
+        return;
+      }
+
+      const res = await fetch(`${GAS_URL}?action=changePassword&newPassword=${encodeURIComponent(newPw)}`);
+      const data = await res.json();
+      document.getElementById('passwordResult').textContent = data.message || 'パスワードを変更しました';
+    }
+  </script>
+</body>
+</html>
