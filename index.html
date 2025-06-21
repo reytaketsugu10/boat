@@ -2,53 +2,41 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>boatguide PDF一覧</title>
+  <title>PDF一覧（認証あり）</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    body { font-family: sans-serif; text-align: center; margin: 50px; }
-    #pdf-container { display: none; }
-    #login-form { margin-top: 100px; }
-    .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .block { border: 1px solid #ccc; padding: 10px; background: #f9f9f9; }
+    #auth-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    input[type="password"] {
+      padding: 10px;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
-    <div id="password-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;">
-      <p>パスワードを入力してください</p>
-      <input type="password" id="password-input" placeholder="パスワード" style="padding: 10px; font-size: 16px;">
-      <button id="password-submit" style="margin-top: 10px;">送信</button>
-      <p id="error-message" style="color: red; display: none; margin-top: 10px;">パスワードが違います</p>
-    </div>
-  
-    <div id="pdf-container" class="grid-container" style="display: none;">
-      <!-- PDF情報がここに表示されます -->
-    </div>
-  
-    <script src="data.js"></script>
-    <script src="script.js"></script>
-  
-    <script>
-      const correctPassword = "yourpassword"; // ← ここを任意のパスワードに置き換えてください
-  
-      document.getElementById("password-submit").addEventListener("click", checkPassword);
-      document.getElementById("password-input").addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-          checkPassword();
-        }
-      });
-  
-      function checkPassword() {
-        const input = document.getElementById("password-input").value;
-        if (input === correctPassword) {
-          document.getElementById("password-screen").style.display = "none";
-          document.getElementById("pdf-container").style.display = "block";
-          if (typeof renderAll === "function") renderAll(); // script.js の読み込みが完了していれば実行
-        } else {
-          document.getElementById("error-message").style.display = "block";
-        }
-      }
-    </script>
-  </body>
-  
+  <div id="auth-screen">
+    <p>パスワードを入力してください：</p>
+    <input type="password" id="passwordInput" placeholder="パスワード">
+    <button onclick="verifyPassword()">送信</button>
+  </div>
+
+  <h1 style="display:none;">PDF一覧</h1>
+  <div id="pdf-container" class="grid-container" style="display:none;"></div>
+
+  <!-- Google API -->
+  <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+  <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
 </html>
