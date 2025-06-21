@@ -2,6 +2,7 @@ const apiKey = 'AIzaSyBe-6zBFKNKPpG7O3QxrPAJaKBFMbEqkDM';
 const spreadsheetId = '11k-4EcAdozis4ksLlC-iOU2Z1aZeriEkGKvF0_FJSqQ'; 
 const uploadSheetId = '1-vk5fLkgsTDZ87m303GLTCDslK2SduUuKxD0KxfcwD0';
 const clientId = '595784083753-a4nh0rmckfovp3l386qud1ifprgpm8hu.apps.googleusercontent.com';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbz-VeaTiFeY044gFb0hpnUGetLeMXQucbJc5Qr3Ee9KyARMe0SXkU036D5_2M_DDUCB/exec';
 
 const folderMap = {
     '住之江': '1y8mt7uBFsR7F_jLRjXTdxGuvBi5t3X0X',
@@ -28,9 +29,8 @@ const folderMap = {
     '鳴門': '1_DfC2wtdHu8yuhEmZPe5SfDlgsWPJbzi',
     '徳山': '1bDvxfL7KRsbdH8RTpnfvjQqIwlvGCPWE',
     '福岡': '1DD12QrNDNS8zPRfMTXRAyZ7TTal_2d2r'
-  };
+  }
 
-
-
+  //15X-LyF3A3TO2iRdvqxJUiI08w6hMZfe6
 
 
